@@ -10,16 +10,13 @@ from iris import db
 logger = logging.getLogger(__name__)
 
 
-class alertmanager(object):
+class grafana(object):
     allow_read_no_auth = False
 
     def validate_post(self, body):
 
-        if not all(k in body for k in("version", "status", "alerts")):
+        if not all(k in body for k in("state", "title", "message")):
             raise HTTPBadRequest('missing version, status and/or alert attributes')
-
-        if 'team' not in body["commonLabels"]:
-            raise HTTPBadRequest('missing team in common labels')
 
     def create_context(self, body):
         context_json_str = ujson.dumps(body)
@@ -50,7 +47,7 @@ class alertmanager(object):
         self.validate_post(alert_params)
 
         with db.guarded_session() as session:
-            plan = alert_params['commonLabels']['team']
+            plan = 'support-grafana'
             plan_id = session.execute('SELECT `plan_id` FROM `plan_active` WHERE `name` = :plan',
                                       {'plan': plan}).scalar()
             if not plan_id:
