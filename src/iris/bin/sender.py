@@ -16,7 +16,7 @@ import copy
 
 from collections import defaultdict
 from iris.plugins import init_plugins
-from iris.vendors imp:q!
+from iris.vendors import IrisVendorManager, iris_smtp
 ort IrisVendorManager, iris_smtp
 from iris.sender import auditlog
 from iris import metrics
