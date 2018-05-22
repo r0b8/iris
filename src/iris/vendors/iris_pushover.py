@@ -9,7 +9,6 @@ from iris.constants import PUSHOVER_SUPPORT
 from iris.custom_import import import_custom_module
 from http.client import HTTPSConnection
 import urllib
-import re
 
 logger = logging.getLogger(__name__)
 
@@ -31,22 +30,21 @@ class iris_pushover(object):
             self.proxy = {'http': 'http://%s:%s' % (host, port),
                           'https': 'https://%s:%s' % (host, port)}
         self.timeout = config.get('timeout', 10)
-        self.application_token = config.get('app_token')
-        self.title = config.get('title')
-        self.sound= config.get('sound')
-        self.high_urgency_regex = config.get('high_urgency_regex')
+        self.application_token = 'avahg8usua899wt4w8z8riz73efwkg'
+        self.title = 'Anatwine production alert'
+        self.sound= 'echo'
         self.priority = 0
 
     def send_message(self, message):
         start = time.time()
-        if re.match( self.high_urgency_regex, message['body'] ):
+        if 'critical' in message['body']:
             self.priority = 1
         else:
             self.priority = 0
         try:
             conn = HTTPSConnection("api.pushover.net:443")
             conn.request("POST", "/1/messages.json",
-                         urlencode({
+                         urllib.urlencode({
                              "token": self.application_token,
                              "user": message['destination'],
                              "message": message['body'],
