@@ -29,15 +29,15 @@ class iris_pushover(object):
             port = self.config['proxy']['port']
             self.proxy = {'http': 'http://%s:%s' % (host, port),
                           'https': 'https://%s:%s' % (host, port)}
-        self.timeout = config.get('timeout', 10)
-        self.application_token = 'avahg8usua899wt4w8z8riz73efwkg'
-        self.title = 'Anatwine production alert'
-        self.sound= 'echo'
+        self.application_token = config.get('app_token')
+        self.title = config.get('title')
+        self.sound= config.get('sound')
+        self.high_urgency_regex = config.get('high_urgency_regex')
         self.priority = 0
 
     def send_message(self, message):
         start = time.time()
-        if 'critical' in message['body']:
+        if re.match( self.high_urgency_regex, message['body'] ):
             self.priority = 1
         else:
             self.priority = 0
