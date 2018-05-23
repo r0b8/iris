@@ -9,6 +9,7 @@ from iris.constants import PUSHOVER_SUPPORT
 from iris.custom_import import import_custom_module
 from http.client import HTTPSConnection
 import urllib
+import re
 
 logger = logging.getLogger(__name__)
 
