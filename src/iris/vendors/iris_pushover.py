@@ -38,7 +38,7 @@ class iris_pushover(object):
 
     def send_message(self, message):
         start = time.time()
-        if re.match( self.high_urgency_regex, message['body'] ):
+        if re.match( self.high_urgency_regex, message['body'], re.DOTALL ):
             self.priority = 1
         else:
             self.priority = 0
