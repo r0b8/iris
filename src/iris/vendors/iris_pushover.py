@@ -40,6 +40,7 @@ class iris_pushover(object):
         start = time.time()
         if re.match( self.high_urgency_regex, message['body'], re.DOTALL ):
             self.priority = 1
+            self.title = self.title + " - urgent"
         else:
             self.priority = 0
         try:
