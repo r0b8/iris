@@ -32,6 +32,7 @@ class iris_pushover(object):
                           'https': 'https://%s:%s' % (host, port)}
         self.application_token = config.get('app_token')
         self.title = config.get('title')
+        self.orig_title = config.get('title')
         self.sound= config.get('sound')
         self.high_urgency_regex = config.get('high_urgency_regex')
         self.priority = 0
@@ -42,6 +43,7 @@ class iris_pushover(object):
             self.priority = 1
             self.title = self.title + " - urgent"
         else:
+            self.title = self.orig_title
             self.priority = 0
         try:
             conn = HTTPSConnection("api.pushover.net:443")
