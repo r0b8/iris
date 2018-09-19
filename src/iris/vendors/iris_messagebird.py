@@ -98,6 +98,7 @@ class iris_messagebird(object):
                                      response.status_code, response.content)
                 except Exception as err:
                     logger.exception('messagebird voicemessage post request failed: %s', err)
-
+        else:
+            logger.info('Skipping sending message to messagebird as it does not meet criteria')
     def send(self, message, customizations=None):
         return self.modes[message['mode']](message)
