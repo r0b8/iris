@@ -17,7 +17,6 @@ class iris_messagebird(object):
     def __init__(self, config):
         self.config = config
         self.modes = {
-            SMS_SUPPORT: self.send_message,
             CALL_SUPPORT: self.send_call,
         }
 
