@@ -92,6 +92,7 @@ class iris_messagebird(object):
                                          proxies=self.proxy,
                                          timeout=self.timeout)
                 if response.status_code == 201:
+                    logger.info('Sent message through messagebird to ' + message['destination'])
                     return time.time() - start
                 else:
                     logger.error('Failed to send voicemessage to messagebird: %d. Response: %s',
