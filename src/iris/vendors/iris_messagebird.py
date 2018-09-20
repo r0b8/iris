@@ -47,7 +47,7 @@ class iris_messagebird(object):
         """Format a proper message dict"""
         message_dict = {
             'body': message['body'],
-            'originator': 'Iris',
+            'originator': 'messagebird',
             'recipients': message['destination'],
         }
         if message['mode'] == 'call':
@@ -79,28 +79,28 @@ class iris_messagebird(object):
     def send_call(self, message):
         start = time.time()
         d = datetime.datetime.now()
-        #if re.match( self.high_urgency_regex, message['body'], re.DOTALL ) and (d.hour in range(21, 23) or d.hour in range(0, 6)):
-        payload = self.get_message_payload(message)
+        if re.match( self.high_urgency_regex, message['body'], re.DOTALL ) and (d.hour in range(21, 23) or d.hour in range(0, 6)):
+            payload = self.get_message_payload(message)
 
-        if self.debug:
-            logger.info('debug: %s', payload)
+            if self.debug:
+                logger.info('debug: %s', payload)
+            else:
+                try:
+                    response = requests.post(self.endpoint_url_voicemessages,
+                                             headers=self.headers,
+                                             json=payload,
+                                             proxies=self.proxy,
+                                             timeout=self.timeout)
+                    if response.status_code == 201:
+                        logger.info('Sent message through messagebird to ' + message['destination'])
+                        return time.time() - start
+                    else:
+                        logger.error('Failed to send voicemessage to messagebird: %d. Response: %s',
+                                     response.status_code, response.content)
+                except Exception as err:
+                    logger.exception('messagebird voicemessage post request failed: %s', err)
         else:
-            try:
-                response = requests.post(self.endpoint_url_voicemessages,
-                                         headers=self.headers,
-                                         json=payload,
-                                         proxies=self.proxy,
-                                         timeout=self.timeout)
-                if response.status_code == 201:
-                    logger.info('Sent message through messagebird to ' + message['destination'])
-                    return time.time() - start
-                else:
-                    logger.error('Failed to send voicemessage to messagebird: %d. Response: %s',
-                                 response.status_code, response.content)
-            except Exception as err:
-                logger.exception('messagebird voicemessage post request failed: %s', err)
-        #else:
-        #    logger.info('Skipping sending message to messagebird as it does not meet criteria')
-        #    return time.time() - start
+            logger.info('Skipping sending message to messagebird as it does not meet criteria')
+            return time.time() - start
     def send(self, message, customizations=None):
         return self.modes[message['mode']](message)
