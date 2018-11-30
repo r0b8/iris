@@ -48,6 +48,10 @@ class iris_messagebird(object):
         message_dict = {
             'body': message['body'],
             'originator': 'messagebird',
+            'ifMachine': 'continue',
+            'machineTimeout': '400',
+            'reference': 'iris-sender',
+            'language': 'en-gb',
             'recipients': message['destination'],
         }
         if message['mode'] == 'call':
